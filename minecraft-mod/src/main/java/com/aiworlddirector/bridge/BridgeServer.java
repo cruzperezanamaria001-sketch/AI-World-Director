@@ -104,11 +104,12 @@ public final class BridgeServer {
             } else if ("GET".equals(exchange.getRequestMethod()) && "/v1/events".equals(path)) {
                 respond(exchange, 200, eventsStatus());
             } else if ("POST".equals(exchange.getRequestMethod()) && "/v1/actions".equals(path)) {
-                if (exchange.getRequestBody().readNBytes(16385).length > 16384) {
+                byte[] requestBytes = exchange.getRequestBody().readNBytes(16385);
+                if (requestBytes.length > 16384) {
                     respond(exchange, 413, error("request_too_large"));
                     return;
                 }
-                String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                String body = new String(requestBytes, StandardCharsets.UTF_8);
                 JsonObject request = JsonParser.parseString(body).getAsJsonObject();
                 JsonObject result = executeAction(request);
                 respond(exchange, result.get("ok").getAsBoolean() ? 200 : 400, result);
@@ -253,7 +254,7 @@ public final class BridgeServer {
         Item item = key == null ? null : ForgeRegistries.ITEMS.getValue(key);
         if (item == null || item == net.minecraft.world.item.Items.AIR) return error("unknown_item");
         boolean added = player.getInventory().add(new ItemStack(item, count));
-        if (!added) player.drop(new ItemStack(item, count), false);
+        if (!added) return error("inventory_full");
         WorldEventLog.add("director_reward", "Gave " + count + " " + id);
         JsonObject result = ok("give_item");
         result.addProperty("item", id);
