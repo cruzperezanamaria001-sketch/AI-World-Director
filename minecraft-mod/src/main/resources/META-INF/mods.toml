@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="aiworlddirector"
+version="0.1.0"
+displayName="AI World Director"
+authors="AI World Director"
+description='''An AI-powered world director for Minecraft. ChatGPT observes events and chooses what happens next.'''
+
+[[dependencies.aiworlddirector]]
+modId="forge"
+mandatory=true
+versionRange="[47.4.10,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.aiworlddirector]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.20.2)"
+ordering="NONE"
+side="BOTH"
